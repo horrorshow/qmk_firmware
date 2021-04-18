@@ -22,18 +22,18 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define LAYOUT_wrapper(...) LAYOUT_split_3x6_3(__VA_ARGS__)
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
-  [_BASE] = LAYOUT_wrapper(
+  [0] = LAYOUT_wrapper(
   //,-----------------------------------------------------.                    ,-----------------------------------------------------.
     ______BASE_LEFT_1______, ______BASE_RIGHT_1______,
     ______BASE_LEFT_2______, ______BASE_RIGHT_2______,
     ______BASE_LEFT_3______, ______BASE_RIGHT_3______,
   //|--------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
-                                          KC_LCTL,   MO(1), FNSPACE,     KC_SPC,   MO(2), KC_RALT
+                                          KC_LCTL,   MO(1), LT(3, KC_SPC),     KC_SPC,   MO(2), KC_RALT
                                       //`--------------------------'  `--------------------------'
 
   ),
 
-  [_LOWER] = LAYOUT_wrapper(
+  [1] = LAYOUT_wrapper(
   //,-----------------------------------------------------.                    ,-----------------------------------------------------.
     ______LOWER_LEFT_1______, ______LOWER_RIGHT_1______,
     ______LOWER_LEFT_2______, ______LOWER_RIGHT_2______,
@@ -43,7 +43,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                                       //`--------------------------'  `--------------------------'
   ),
 
-  [_RAISE] = LAYOUT_wrapper(
+  [2] = LAYOUT_wrapper(
   //,-----------------------------------------------------.                    ,-----------------------------------------------------.
     ______RAISE_LEFT_1______, ______RAISE_RIGHT_1______,
     ______RAISE_LEFT_2______, ______RAISE_RIGHT_2______,
@@ -53,7 +53,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                                       //`--------------------------'  `--------------------------'
   ),
 
-  [_FN] = LAYOUT_wrapper(
+  [3] LAYOUT_wrapper(
   //,-----------------------------------------------------.                    ,-----------------------------------------------------.
      ______FN_LEFT_1______,                                                     ______FN_RIGHT_1______,
   //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
@@ -74,10 +74,10 @@ oled_rotation_t oled_init_user(oled_rotation_t rotation) {
   return rotation;
 }
 
-#define L_BASE _BASE
-#define L_LOWER _LOWER
-#define L_RAISE _RAISE
-#define L_ADJUST _FN
+#define L_BASE 0
+#define L_LOWER 2
+#define L_RAISE 4
+#define L_ADJUST 8
 
 void oled_render_layer_state(void) {
     oled_write_P(PSTR("Layer: "), false);
@@ -156,9 +156,16 @@ void oled_render_logo(void) {
 void oled_task_user(void) {
     if (is_master) {
         oled_render_layer_state();
+        oled_render_keylog();
     } else {
         oled_render_logo();
     }
 }
 
+bool process_record_user(uint16_t keycode, keyrecord_t *record) {
+  if (record->event.pressed) {
+    set_keylog(keycode, record);
+  }
+  return true;
+}
 #endif // OLED_DRIVER_ENABLE

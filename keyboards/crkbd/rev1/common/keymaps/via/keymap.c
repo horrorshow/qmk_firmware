@@ -158,8 +158,7 @@ void oled_render_logo(void) {
 void oled_task_user(void) {
     if (is_master) {
         oled_render_layer_state();
-        oled_render_keylog();
-    } else {
+     } else {
         oled_render_logo();
     }
 }

@@ -14,7 +14,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 #include QMK_KEYBOARD_H
-#include "horrorshow93.h"
+#include "users/horrorshow93/horrorshow93.h"
 
 #define LAYOUT_wrapper(...) LAYOUT_reviung41(__VA_ARGS__)
 

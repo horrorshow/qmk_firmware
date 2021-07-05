@@ -17,9 +17,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 #include QMK_KEYBOARD_H
-// keyboards/crkbd/rev1/common/keymaps/via/keymap.c
-// users/horrorshow93/horrorshow93.h
-#include "users/horrorshow93/horrorshow93.h"
+#include "horrorshow93.h"
 
 #define LAYOUT_wrapper(...) LAYOUT_split_3x6_3(__VA_ARGS__)
 
@@ -63,16 +61,14 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
      ______FN_LEFT_3______,                                                     RGB_M_B, RGB_MOD, XXXXXXX, XXXXXXX, XXXXXXX, KC_RCTL,
   //|--------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
-                                          _______, _______, _______,     KC_ENT, KC_ENT, _______
+                                          _______, _______, _______,     KC_ENT, _______, _______
                                       //`--------------------------'  `--------------------------'
   )
 };
 
 #ifdef OLED_DRIVER_ENABLE
-#include <stdio.h>
-
 oled_rotation_t oled_init_user(oled_rotation_t rotation) {
-  if (!is_keyboard_master()) {
+  if (!is_master) {
     return OLED_ROTATION_180;  // flips the display 180 degrees if offhand
   }
   return rotation;
@@ -158,9 +154,10 @@ void oled_render_logo(void) {
 }
 
 void oled_task_user(void) {
-    if (is_keyboard_master()) {
+    if (is_master) {
         oled_render_layer_state();
-     } else {
+        oled_render_keylog();
+    } else {
         oled_render_logo();
     }
 }
